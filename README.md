@@ -5,11 +5,62 @@
 在线地址：<https://grassit.cn>
 ## 1. 概要
 
+### 万一有用呢
+- 资源系统
+  - 不做通用网盘，而是作为文章的依赖资源仓库
+  - 一篇文章由 Markdown 和若干依赖资源组成
+  - 不支持深层目录
+- Markdown 引用
+  - 上传时将站内文章、资源引用转换为内部 ID
+  - 内部引用不依赖 slug，因此修改 slug 不会导致站内引用失效
+  - 渲染时将内部 ID 转换为当前可读 URL
+  - 外部引用不进行处理，可能因外部地址变化而失效
+- Markdown 导出
+  - 原始：直接返回用户上传的原始 Markdown
+  - 即用：将内部引用转换为永久链接，可直接在网站外使用
+
+### 项目阶段
+
+- 0.x
+  - 当前开发阶段
+  - 完成基础页面与项目框架
+  - 尚未达到最小可行产品，因此暂不使用正式版本号
+
+- 1.0
+  - 初步完成文章系统
+  - 可以通过 slug 查看预存文章
+
+- 2.0
+  - 初步完成账号系统
+  - 接入数据库
+  - 文章与用户关联
+  - 可以查找、发布文章
+
+- 3.0
+  - 初步完成个人资源存储系统
+  - 文章拥有自己的依赖资源
+  - Markdown 支持内部资源引用
+  - 可以引用本站上传的图片等资源
+
+- 4.0
+  - 调整已有系统和底层
+  - 提供桌面端
+  - 学习并加入实时网络通信
+  - 支持主动推送、私聊等功能
+- 待定
+  - Wiki
+  - 自定义标签
+  - 自定义样式
+  - 创建日期、更新日期
+  - 留言
+  - 更多文章版本
+  - 游戏相关内容
+  - 其他功能模块
 
 ## 2. 技术栈
 
 - **前端**: Vue 3(JS) / Vite / Vue Router
-- **后端**: FastAPI(python)
+- **后端**: Spring Boot(java)
 - **数据库**: MySQL
 - **桌面端**: Electron（计划使用）
 - **实时通信**: WebSocket / WebRTC（计划使用）
@@ -45,7 +96,6 @@
       - main.js
     - index.html
   - backend/
-    - main.py
   - .gitignore
 
 ## 4. url结构
@@ -107,92 +157,65 @@ type user = {
 }
 ```
 
-**文章记录**  
-```ts
-type article = {
-    id: string[4] // 哈希后的主键
-    slug: string // 唯一, 用作临时链接
-    auther: string // 作者的username, 渲染为昵称
-    created_at: string // 文章创建时间
-    updated_at: string // 最后一次对任意版本修改的时间
-}
+下面为参考: 
+```sql
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(32) NOT NULL UNIQUE,
+    nickname VARCHAR(64) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    avatar_url VARCHAR(512)
+);
 ```
+**文章记录**参考:  
+```sql
+CREATE TABLE articles (
+    uuid CHAR(36) PRIMARY KEY,
+    slug VARCHAR(128) NOT NULL UNIQUE,
+    author_id BIGINT UNSIGNED NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
 
+    FOREIGN KEY (author_id) REFERENCES users(id)
+);
+```
 **文件存储**
 
-在后端, 例如:
-- articles/
-  - 1v4r/
-    - main.md 
-    - raw.md
-    - sunny.png
-    - resource.zip
-    - ...
-- avatars/
-  - r674.jpeg
+公开位置, 例如/var/lib/grassit/等:
+
+- files/
+  - articles/
+    - {uuid}/
+      - main.md 
+      - raw.md
+      - map.json
+  - resources/
+    - {某哈希后的名字}.jpeg
+    - {某哈希后的名字}.zip
+  - avatars/
+    - {id}.jpeg
+    - 
   - ...
 
-### 1. 核心功能
-- 资源系统
-  - 不做通用网盘，而是作为文章的依赖资源仓库
-  - 一篇文章由 Markdown 和若干依赖资源组成
-  - 不支持深层目录
-- Markdown 引用
-  - 上传时将站内文章、资源引用转换为内部 ID
-  - 内部引用不依赖 slug，因此修改 slug 不会导致站内引用失效
-  - 渲染时将内部 ID 转换为当前可读 URL
-  - 外部引用不进行处理，可能因外部地址变化而失效
-- Markdown 导出
-  - 原始：直接返回用户上传的原始 Markdown
-  - 即用：将内部引用转换为永久链接，可直接在网站外使用
+## 接口
 
-### 3. 项目阶段
+> 仅有v1.0的接口
 
-- 0.x
-  - 当前开发阶段
-  - 完成基础页面与项目框架
-  - 尚未达到最小可行产品，因此暂不使用正式版本号
+### `api/article/slug/:slug`
+  用slug查找, 返回json:
+```ts
+type article = {
+    id: char(36) //主键
+    slug: string // 唯一, 用作临时链接
+    auther: int // 作者的userid
+    created: string // 文章创建时间
+    updated: string // 最后一次对任意版本修改的时间
+}
+```
+### `api/article/id/:id`
+  用uuid查找, 返回内容同上.
 
-- 1.0
-  - 初步完成文章系统
-  - 可以通过 slug 查看预存文章
 
-- 2.0
-  - 初步完成账号系统
-  - 接入数据库
-  - 文章与用户关联
-  - 可以查找、发布文章
 
-- 3.0
-  - 初步完成个人资源存储系统
-  - 文章拥有自己的依赖资源
-  - Markdown 支持内部资源引用
-  - 可以引用本站上传的图片等资源
-
-- 4.0
-  - 调整已有系统和底层
-  - 提供桌面端
-  - 学习并加入实时网络通信
-  - 支持主动推送、私聊等功能
-
-### 4. 后续扩展
-
-- Wiki
-- 自定义标签
-- 自定义样式
-- 创建日期、更新日期
-- 留言
-- 更多文章版本
-- 游戏相关内容
-- 其他功能模块
-
-## 游戏项目
-
-- 与网站项目分开开发
-- 游戏项目可以独立完成，不强制与 GrassIt 网站绑定
-- 卡牌游戏、解谜游戏、生存建造游戏等作为独立企划
-- 卡牌游戏可以作为其他游戏的底层框架或独立项目
-- 网络通信可以作为游戏项目和网站桌面端共同学习的技术
-- 美术资源尽量考虑招募美工协作，避免个人开发占用过多时间
-- 游戏项目不以短期完成为目标，在有足够时间和资源后再推进
 
