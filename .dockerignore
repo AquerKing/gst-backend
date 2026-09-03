@@ -1,0 +1,10 @@
+# Built objects and configs
+target/
+*.iml
+.idea/
+.git/
+
+# Intermediate files
+logs/
+*.log
+*.tmp
