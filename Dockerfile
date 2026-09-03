@@ -33,4 +33,4 @@ COPY --from=build /app/target/app.jar /app/app.jar
 RUN echo "=== Contents of /app/ ===" && ls -l /app/
 
 EXPOSE 8090
-ENTRYPOINT ["java", "-jar", "target/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
