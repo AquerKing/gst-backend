@@ -20,11 +20,12 @@ RUN mvn package -DskipTests
 FROM eclipse-temurin:26-jre
 WORKDIR /app
 
-RUN addgroup -g 1001 -S grassit && \
-    adduser -u 1001 -S grassit -G grassit
+RUN groupadd -g 1001 grassit && \
+    useradd -u 1001 -g grassit -s /sbin/nologin -M grassit
 
 RUN mkdir -p /var/lib/grassit && \
-    chown -R grassit:grassit /var/lib/grassit
+    chown -R grassit:grassit /var/lib/grassit && \
+    chmod 750 /var/lib/grassit
 
 USER grassit:grassit
 
