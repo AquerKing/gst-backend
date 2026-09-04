@@ -177,7 +177,7 @@ CREATE TABLE articles (
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL,
 
-    FOREIGN KEY (author_id) REFERENCES users(id)
+    FOREIGN KEY (author_id) REFERENCES user_base(id)
 );
 ```
 **文件存储**

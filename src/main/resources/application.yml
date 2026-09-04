@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: GrassITBackend
+  datasource:
+    url: jdbc:mysql://localhost:3306/grassit_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: gstadmin
+
+server:
+  port: 8090
+
+application:
+  data-folder: /var/lib/grassit

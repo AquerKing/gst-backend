@@ -2,23 +2,29 @@ package cn.grassit.grassitbackend.Response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ArticleDetail {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Article {
+
     @JsonProperty("uuid")
     public String uuid;
 
     @JsonProperty("slug")
     public String slug;
 
-    @JsonProperty("authorId")
-    public BigInteger authorId;
-
-    @JsonProperty("authorName")
-    public String authorName;
+    @JsonProperty("author")
+    public Author author;
 
     @JsonProperty("createdAt")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -31,9 +37,10 @@ public class ArticleDetail {
     @JsonProperty("content")
     public String content;
 
-    @JsonProperty("toc")
-    public List<Object> toc;
+    @JsonProperty("tags")
+    public List<String> tags;
 
     @JsonProperty("attachments")
     public List<Attachment> attachments;
+
 }
