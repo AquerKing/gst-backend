@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/api")
 public class TimeController {
 
-    @GetMapping("/test/time/now")
+    @GetMapping({"/api/test", "/api"})
     public ResponseEntity<DateTime> now() {
         DateTime dateTime = new DateTime();
         dateTime.dateTime = LocalDateTime.now();

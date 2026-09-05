@@ -21,12 +21,7 @@ public class ArticleController {
 
     private final DBTools dbTools;
     private final FileService fileService;
-
-    @GetMapping("/test/{content}")
-    public String test(@PathVariable String content) {
-        return "Test: " + content;
-    }
-
+    
     @GetMapping("/article")
     public ResponseEntity<List<JacksonProperties.Json>> getArticlesByParams(
             @RequestParam(name = "author", required = false) BigInteger authorId,
