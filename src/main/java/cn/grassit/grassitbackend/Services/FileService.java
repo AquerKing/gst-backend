@@ -1,5 +1,6 @@
 package cn.grassit.grassitbackend.Services;
 
+import cn.grassit.grassitbackend.Database.Predefinitions.DefaultFileNames;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class FileService {
     }
 
     public void createArticle(String uuid, String content) throws IOException {
-        Path path = Path.of(articlesRoot).resolve(uuid).resolve(uuid + ".md");
+        Path path = Path.of(articlesRoot).resolve(uuid).resolve(DefaultFileNames.ARTICLE_NAME);
         if (!Files.exists(path)) {
             Files.createFile(path);
         }
@@ -46,7 +47,7 @@ public class FileService {
     }
 
     public String getArticleContent(String uuid) throws IOException {
-        Path path = Path.of(articlesRoot).resolve(uuid).resolve(uuid + ".md");
+        Path path = Path.of(articlesRoot).resolve(uuid).resolve(DefaultFileNames.ARTICLE_NAME);
         if (!Files.exists(path)) {
             return null;
         }
