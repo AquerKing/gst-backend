@@ -11,3 +11,4 @@ server:
 
 application:
   data-folder: /var/lib/grassit
+  version: 0.0.2
