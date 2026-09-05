@@ -15,7 +15,7 @@ public class TimeController {
 
     private final AppInfo appInfo;
 
-    @GetMapping({"/api/test", "/api"})
+    @GetMapping({"/api/test", "/api", "/api/"})
     public ResponseEntity<TimeResponse> now() {
         TimeResponse timeResponse = new TimeResponse();
         timeResponse.dateTime = LocalDateTime.now();
